@@ -2,10 +2,9 @@
 Allison Butt, CMSC 315 6380 Project 1, 26 May 26
 This file conducts a test on our program.
 This test: 
-    is designed to be accepted by the program and run correctly.
+    Is designed to detect a mismatch by comparing the left delimiter { to a mismatched )
 */
-
-public class Test {
+public class Test4 {
     
     public static void main(String[] args) {
 
@@ -16,5 +15,5 @@ public class Test {
         if (true) {
             System.out.println(value);
         }
-    }
+    )
 } 
