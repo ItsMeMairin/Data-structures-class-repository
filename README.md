@@ -1,5 +1,9 @@
 # Data structures class repository
 For my college class
 
-The repository is weird and i dont know how to fix it, but the project tests are required to be in the file ABOVE the project file, so keep that in mind if you need to go back and make changes
+I fixed the repository! I know what's going on now. In order to work on a project, open THAT PROJETS folder, not the parent repository. 
+
+All exercises go in the same folder, just label chapter and exercise. 
+
+All project files stay in their respective folders.
 
