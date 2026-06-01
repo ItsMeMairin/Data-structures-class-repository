@@ -1,0 +1,65 @@
+// Write your imports here if needed
+import java.util.Scanner;
+import java.util.TreeSet;
+import java.util.Arrays;
+
+public class Exercise1 {
+
+    // Write your code here
+    public static void main(String[] args) {
+        //create scanner
+        Scanner usrInput = new Scanner(System.in);        
+
+        //prompt user input for first set
+        System.out.print("Enter strings for the first set: ");
+        String inputSet1 = usrInput.nextLine();
+        String [] inputParts1 = inputSet1.split(" ");
+        
+        //create tree and backup
+        TreeSet<String> tree1 = new TreeSet<>(Arrays.asList(inputParts1));
+        TreeSet<String> tree1Backup = (TreeSet<String>) tree1.clone();
+        
+        //prompt user input for second set
+        System.out.print("Enter strings for the first set: ");
+        String inputSet2 = usrInput.nextLine();
+        String [] inputParts2 = inputSet2.split(" ");
+
+        //create tree and backup
+        TreeSet<String> tree2 = new TreeSet<>(Arrays.asList(inputParts2));
+        TreeSet<String> tree2Backup = (TreeSet<String>) tree2.clone();
+
+        usrInput.close();
+
+        System.out.print("The union of the two sets is " + displayUnion(tree1, tree2));
+        System.out.print("The difference of the two sets is " + displayDiff(tree1, tree2));
+        System.out.print("The intersection of the two sets is " + displayIntersection(tree1, tree2));
+
+
+        displayUnion(tree1, tree2);
+        displayDiff(tree1, tree2);
+        displayIntersection(tree1, tree2);
+    }
+
+    //display union
+    public static TreeSet displayUnion (TreeSet a, TreeSet b) {
+        TreeSet<String> unionSet = new TreeSet<>(a);
+        unionSet.addAll(b);
+        return unionSet;
+    }
+    //display difference
+    public static TreeSet displayDiff (TreeSet a, TreeSet b) {
+        TreeSet<String> unionSet = new TreeSet<>(a);
+        unionSet.removeAll(b);
+        return unionSet;
+    }
+    //display intersection
+    public static TreeSet displayIntersection (TreeSet a, TreeSet b) {
+        TreeSet<String> unionSet = new TreeSet<>(a);
+        unionSet.retainAll(b);
+        return unionSet;
+    }
+
+    //use addAll, removeAll, and retainAll to perfrom union, diff, intersection
+
+  
+}

@@ -1,0 +1,55 @@
+// Write your imports here if needed
+import java.util.Scanner;
+import java.lang.String;
+
+public class Exercise2 {
+
+    // Write your code here
+    public static void main (String[] args) {
+
+        //reads a string
+        Scanner usrInput = new Scanner(System.in);
+        System.out.print("Enter a string:");
+        String inputString = usrInput.nextLine();
+        HashMap<Character, Integer> alphabet = new HashMap<>();
+
+
+        //throws characters into a hash map
+        for (char ch : inputString.toLowerCase().toCharArray()) {
+
+            if (Character.isLetter(ch)) {
+
+                if (alphabet.containsKey(ch)) {
+                    alphabet.put(ch, alphabet.get(ch) + 1);
+                }
+                else {
+                    alphabet.put(ch, 1);
+                }
+            }
+        }
+
+        //sort entries
+        List<alphabet.Entry<Character, Integer>> list = 
+            new ArrayList<>(alphabet.entrySet());
+
+        list.sort((a, b) -> {
+            int countCompare = a.getValue().compareTo(b.getValue());
+
+            if (countCompare != 0) {
+                return countCompare;
+            }
+
+            return a.getKey().compareTo(b.getKey());
+        });
+
+        
+
+        //display letters and their count in increasing order (c: 1, a: 2, etc)
+            //if counts are equal use alphabetical order
+            //displayed in lowercase
+        for (alphabet.Entry<Character, Integer> entry : list) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
+    }
+  
+}
