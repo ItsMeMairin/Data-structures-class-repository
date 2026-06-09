@@ -5,6 +5,13 @@ For a hint on this program, please see https://liveexample.pearsoncmg.com/javare
 */
 
 /* You only need to write your code for the clone and equals methods */
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 public class Exercise23_1 {
   public static void main(String[] args) {
     String[] strings = {"red", "green", "purple", "orange", "yellow", "cyan"};
@@ -113,13 +120,34 @@ public class Exercise23_1 {
       return list.size() == 0;
     }
   
+    @Override
     public Object clone() {
       // WRITE YOUR CODE HERE
       // Hint: Need to perform a deep copy. See Section 13.7 for reference
-    }
+      try {
+        Heap<E> cloned = (Heap<E>)super.clone();
+        cloned.list = new java.util.ArrayList<>(this.list);
+        return cloned;
+      }
+
+      catch (CloneNotSupportedException ex) {
+        return null;
+      }
+    } 
     
+    @Override
     public boolean equals(Object o) {
       // WRITE YOUR CODE HERE
+      if (this == o) {
+        return true;
     }
+      if (!(o instanceof Heap)) {
+        return false;
+      }
+
+      Heap<?> other = (Heap<?>)o;
+
+      return this.list.equals(other.list);
   }
+}
 }
