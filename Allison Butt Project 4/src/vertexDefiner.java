@@ -1,3 +1,4 @@
+
 /**
  This class should be an immutable class that
 defines a vertex of the graph and contains the x and y coordinates of the vertex along with its
