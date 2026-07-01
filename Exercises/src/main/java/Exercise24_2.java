@@ -11,7 +11,8 @@ public class Node<E> {
     element = e;
   }
 }
-Implement a new class named TwoWayLinkedList that uses a doubly linked list to store elements. Define TwoWayLinkedList to implements MyList. You need to implement all the methods defined in MyLinkedList as well as the methods listIterator() and listIterator(int index). Both return an instance of java.util.ListIterator<E> (see Figure 20.4 in the book). The former sets the cursor to the head of the list and the latter to the element at the specified index.
+Implement a new class named TwoWayLinkedList that uses a doubly linked list to store elements. Define TwoWayLinkedList to implements MyList. You need to implement all the methods defined in MyLinkedList as well as the methods
+ listIterator() and listIterator(int index). Both return an instance of java.util.ListIterator<E> (see Figure 20.4 in the book). The former sets the cursor to the head of the list and the latter to the element at the specified index.
 
 When you create a new submission, you'll notice a template code. Your task is to fill in the missing code part indicated by "WRITE YOUR CODE HERE".
 
@@ -19,12 +20,12 @@ For a hint on this program, please see https://liveexample.pearsoncmg.com/javare
 */
 
 // Look for WRITE YOUR CODE to write your code
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.ListIterator;
-import java.util.LinkedList;
 import java.util.Scanner;
-import java.util.Collection;
 
+//note: change all instances of Exercise24_2 to Exercise when submitting answer
 public class Exercise24_2 {
   public static void main(String[] args) {
     new Exercise24_2();
@@ -51,6 +52,7 @@ public class Exercise24_2 {
     while (iterator1.hasNext())
       System.out.print(iterator1.next() + " ");
 
+    
     java.util.ListIterator<Double> iterator2 = list.listIterator(list.size() - 1);
     System.out.print("\nThe list in backward order: ");
     while (iterator2.hasPrevious())
@@ -337,12 +339,38 @@ class TwoWayLinkedList<E> implements MyList<E> {
 
   /** Add an element to the beginning of the list */
   public void addFirst(E e) {    
-    // WRITE YOUR CODE HERE
+    Node<E> newNode = new Node<>(e);
+
+    newNode.next = head;
+
+    if (head != null) {
+      head.previous = newNode;
+    }
+
+    head = newNode;
+
+    if (tail == null) {
+      tail = head;
+    }
+
+    size++;
+
   }
 
   /** Add an element to the end of the list */
   public void addLast(E e) {
-    // WRITE YOUR CODE HERE
+    Node<E> newNode = new Node<>(e);
+
+    if(tail == null) {
+      head = tail = newNode;
+    }
+    else {
+      tail.next = newNode;
+      newNode.previous = tail;
+      tail = newNode;
+    }
+
+    size++;
   }
 
   /**
@@ -350,7 +378,39 @@ class TwoWayLinkedList<E> implements MyList<E> {
    * head element is 0
    */
   public void add(int index, E e) {
-    // WRITE YOUR CODE HERE
+    if (index < 0 || index > size) {
+      throw new IndexOutOfBoundsException();
+    }
+
+    if (index == 0) {
+      addFirst(e);
+    }
+
+    else if (index == size) {
+      addLast(e);
+    }
+
+    else {
+      Node<E> current = head;
+
+      for (int i = 1; i < index; i++) {
+        current = current.next;
+      }
+
+      Node<E> temp = current.next;
+
+      Node<E> newNode = new Node<>(e);
+
+      current.next = newNode;
+      newNode.previous = current;
+
+      newNode.next = temp;
+      temp.previous = newNode;
+
+      size++;
+      
+    }   
+
   }
 
   /**
@@ -358,7 +418,23 @@ class TwoWayLinkedList<E> implements MyList<E> {
    * removed node.
    */
   public E removeFirst() {
-    // Write your code here
+    if (size == 0) {
+      return null;
+    }
+
+    E temp = head.element;
+
+    head = head.next;
+
+    size--;
+
+    if (head == null) {
+      tail = null;
+    }
+    else {
+      head.previous = null;
+    }
+    return temp;
   }
 
   /**
@@ -366,7 +442,23 @@ class TwoWayLinkedList<E> implements MyList<E> {
    * removed node.
    */
   public E removeLast() {
-    // WRITE YOUR CODE HERE
+    if (size == 0) {
+      return null;
+    }
+
+    if (size == 1) {
+      E temp = head.element;
+      head = tail = null;
+      size = 0;
+      return temp;
+    }
+
+    E temp = tail.element;
+    tail = tail.previous;
+    tail.next = null;
+    size--;
+
+    return temp;
   }
 
   /**
@@ -374,6 +466,32 @@ class TwoWayLinkedList<E> implements MyList<E> {
    * element that was removed from the list.
    */
   public E remove(int index) {
-    // WRITE YOUR CODE HERE
+    if (index < 0 || index >= size) {
+      return null;
+    }
+
+    if (index == 0) {
+      return removeFirst();
+    }
+
+    if (index == size - 1) {
+      return removeLast();
+    }
+
+    Node<E> current = head;
+
+    for (int i = 0; i < index; i++) {
+      current = current.next;
+    }
+
+    E temp = current.element;
+
+    current.previous.next = current.next;
+
+    current.next.previous = current.previous;
+
+    size--;
+
+    return temp;
   }
 }

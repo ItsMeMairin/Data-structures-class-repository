@@ -1,5 +1,11 @@
-
-import java.util.Arrays;
+/*
+Allison Butt CMSC 315 6380 Project 3 
+22 June 26
+This class is our main binary tree constructor and handler. This class constructs trees based off of user input, and provides
+several checks to check if it is a Binary Search Tree, or a Max Heap. 
+It also provides us several methods to display that information in a readable format back to the user. 
+*/
+import java.util.ArrayList;
 
 public class CompleteBinaryTree {
 
@@ -61,25 +67,23 @@ public class CompleteBinaryTree {
      */
 
     public CompleteBinaryTree(String levelOrderValues) throws InvalidTreeException {
-        if (levelOrderValues != null && levelOrderValues.isBlank() != true) {
-                
-            String[] cleanedStringArray = levelOrderValues.strip().split("\\s+");
-            Integer[] toIntArray = new Integer[levelOrderValues.length()];
-            for (Integer i = 0 ; i < cleanedStringArray.length ; i++) {
-                toIntArray[i] = Integer.valueOf(cleanedStringArray[i]);
-            }
+        if (levelOrderValues == null || levelOrderValues.isBlank()) {
+            return;
+        }        
+        String[] cleanedStringArray = levelOrderValues.strip().split("\\s+");
+        Integer[] toIntArray = new Integer[cleanedStringArray.length];
+        for (int i = 0 ; i < cleanedStringArray.length ; i++) {
 
-            Integer[] removedNull;
-
-            for (Integer i : toIntArray) {
-                if (i != null) {
-                    removedNull.add(int)
-                }
+            try {
+             toIntArray[i] = Integer.valueOf(cleanedStringArray[i]);
             }
-            
-            System.out.println(Arrays.toString(toIntArray));
-            root = makeNode(toIntArray, 0);
+            catch (NumberFormatException e) {
+                throw new InvalidTreeException("Node value must be an integer.");
+            }
         }
+
+        root = makeNode(toIntArray, 0);
+        
     }
 
     /**
@@ -121,9 +125,8 @@ public class CompleteBinaryTree {
      * Performs a preorder traversal of the tree.
      */
     public void preorder() {
-        System.out.print("Preorder: ");
-        preorder(root);
-        System.out.println();
+        System.out.println("Preorder:");
+        preorder(root, 0);
     }
 
     /**
@@ -131,12 +134,56 @@ public class CompleteBinaryTree {
      *
      * @param root the current subtree root
      */
-    private void preorder(TreeNode root) {
+    private void preorder(TreeNode root, int level) {
         if (root == null)
             return;
-        System.out.print(root.value + " ");
-        preorder(root.left);
-        preorder(root.right);
+        for (int i = 0; i < level; i++) {
+            System.out.print("    ");
+        }
+        System.out.println(root.value);
+
+        preorder(root.left, level + 1);
+        preorder(root.right, level + 1);
+    }
+
+    public boolean isMaxHeap() {
+        return isMaxHeap(root);
+    }
+
+    private boolean isMaxHeap(TreeNode node) {
+        if (node == null) return true;
+
+        if (node.left != null && node.value < node.left.value) return false;
+        if (node.right != null && node.value < node.right.value) return false;
+
+        return isMaxHeap(node.left) && isMaxHeap(node.right);
+    }
+
+    public boolean isBinarySearchTree() {
+        return isBinarySearchTree(root, null, null);
+    }
+
+    private boolean isBinarySearchTree(TreeNode node, Integer min, Integer max) {
+        if (node == null) return true;
+
+        if (min != null && node.value <= min) return false;
+        if (max != null && node.value >= max) return false;
+
+        return isBinarySearchTree(node.left, min, node.value)
+            && isBinarySearchTree(node.right, node.value, max);
+    }
+
+    public ArrayList<Integer> inorderList() {
+        ArrayList<Integer> list = new ArrayList<>();
+        inorder(root, list);
+        return list;
+    }
+
+    private void inorder(TreeNode node, ArrayList<Integer> list) {
+        if (node == null) return;
+        inorder(node.left, list);
+        list.add(node.value);
+        inorder(node.right, list);
     }
 
 }
