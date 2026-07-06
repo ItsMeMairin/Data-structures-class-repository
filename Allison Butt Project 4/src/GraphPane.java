@@ -1,129 +1,121 @@
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.Node;
-import javafx.scene.shape.Line;
-import javafx.scene.text.Text;
 import java.util.HashMap;
 import java.util.Map;
-
-/*
-The third class is should be an extension of the javafx Pane class that 
-visually displays the
-graph. It should contain an event handler that responds to mouse clicks 
-that creates new vertices
-and a method that is called to draw edges
-
-Draw circles
-Draw labels
-Draw lines
-Handle mouse clicks
-
-
-event handler
-    get x + y coordinates from mouse click
-    pass click into virtex definer 
-
-use methods from graph definer to display graph 
-
-plots virtexes in alphabetical order 
-
-draws edge between appropriate vertices
-*/
-
-//import javafx pane class to be an extension
-import javafx.*;
-import javafx.application.Application;
-import javafx.stage.Stage;
-import javafx.scene.Scene;
-import javafx.scene.chart.XYChart;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
+import javafx.scene.text.Text;
 
+/**
+ * @author Allison Butt
+ * @version CMSC 315 6380 - 6 July 2026
+ * 
+ * GraphPane
+ * This class creates the GraphPane object used by the GUI
+ * 
+ * This class manages the plotting and display of graph nodes which the user creates via clicking and adding edges between vertices. 
+ * @param GraphDefiner graph object to store data
+ * @param Map creates two maps, one for vertices and other for stored labels
+ * @param char allows for the vertex labels to iterate with clicks
+ * 
+ */
 
 public class GraphPane extends Pane {
 
-    private final Map<Vertex, Circle> vertexMarkers = new HashMap<>();
+    //create required objects and variables
+    private GraphDefiner graph;
 
-   
+    private Map<String, Circle> vertexMap = new HashMap<>();
+    private Map<String, Text> labelMap = new HashMap<>();
+    private char nextLabel = 'A';
+
+
     /**
-     * Adds a vertex to the pane at specific coordinates.
+     * GraphPane
+     * 
+     * creates graph UI element
+     * 
+     * This method creates a GraphPane object which is used in the GUI and receives user input. 
+     * It collects mouse action data and draws elements
+     * @param graph GraphDefiner object
      */
-    public void addVertex(String id, double x, double y) {
-        if (vertexMarkers.containsKey(id)) return;
+    public GraphPane(GraphDefiner graph) {
 
-        Circle circle = new Circle(x, y, 15, Color.LIGHTBLUE);
-        circle.setStroke(Color.BLUE);
-        circle.setStrokeWidth(2);
+        //copies graph object
+        this.graph = graph;
 
-        Text label = new Text(id);
-        // Center the text inside the circle
-        label.xProperty().bind(circle.centerXProperty().subtract(label.getLayoutBounds().getWidth() / 2));
-        label.yProperty().bind(circle.centerYProperty().add(label.getLayoutBounds().getHeight() / 4));
+        //set action
+        this.setOnMouseClicked(e -> {
 
-        // Enable drag-and-drop movement for the vertex
-        //enableDrag(circle);
+            //get mouse coordinates
+            double x = e.getX();
+            double y = e.getY();
 
-        vertexMarkers.put(id, circle);
-        this.getChildren().addAll(circle, label);
+            //iterate to the next label
+            String name = String.valueOf(nextLabel++);
+
+            //create Vertex object with coordinates and label
+            Vertex v = new Vertex(name, x, y);
+
+            // add to data
+            graph.addVertex(v);
+
+            // draw data on UI
+            drawVertex(v);
+        });
     }
 
     /**
-     * Connects two existing vertices with a line.
+     * Draws Vertex elements
+     * 
+     * This method draws a dot and label on the location the user clicks their mouse within the graph
+     * 
+     * @param v Vertex object created by mouseclick 
      */
-    public void addEdge(String sourceId, String targetId) {
-        Circle source = vertexMarkers.get(sourceId);
-        Circle target = vertexMarkers.get(targetId);
+    private void drawVertex(Vertex v) {
+        //creates dot for plotting
+        Circle circle = new Circle(v.getX(), v.getY(), 4, Color.BLACK);
+        circle.setStroke(Color.BLACK);
 
-        if (source == null || target == null) return;
+        //name label for Vertex
+        Text text = new Text(v.getName());
 
-        Line edge = new Line();
-        // Bind edge positions to circle center positions
-        edge.startXProperty().bind(source.centerXProperty());
-        edge.startYProperty().bind(source.centerYProperty());
-        edge.endXProperty().bind(target.centerXProperty());
-        edge.endYProperty().bind(target.centerYProperty());
-        
-        edge.setStroke(Color.GRAY);
-        edge.setStrokeWidth(2);
+        // position label above the circle
+        text.setX(v.getX() - 4);
+        text.setY(v.getY() - 12);
 
-        // Send edges to the back so they don't cover text/circles
-        this.getChildren().add(0, edge);
+        //adds elements to data for future use
+        vertexMap.put(v.getName(), circle);
+        labelMap.put(v.getName(), text);
+
+        //applies drawing to GUI
+        this.getChildren().addAll(circle, text);
     }
 
-   
+    /**
+     * Draws edge elements
+     * 
+     * This method draws a line between two vertices as stipulated by the user
+     * @param v1 first Vertex
+     * @param v2 second Vertex
+     */
+    public void drawEdge(String v1, String v2) {
 
-    // Helper class for mouse tracking
-    private static class Delta { double x, y; }
+        //locates the relative circles for each vertex
+        Circle c1 = vertexMap.get(v1);
+        Circle c2 = vertexMap.get(v2);
+
+        //breaks if null case
+        if (c1 == null || c2 == null) return;
+
+        //draws line between two circles
+        Line line = new Line(
+                c1.getCenterX(), c1.getCenterY(),
+                c2.getCenterX(), c2.getCenterY()
+        );
+
+        //applies drawing to GUI
+        this.getChildren().add(0, line);
+    }
+
 }
-
-
-
- /*public graphPane() {
-        // Apply styling or sizing constraints if needed
-        this.setStyle("-fx-background-color: #f9f9f9; -fx-border-color: #cccccc;");
-    }
-
-
-
-    /* 
-    rootPane.setOnMouseClicked(event -> {
-        double sceneX = event.getSceneX(); // Window-relative coordinate
-        double nodeX = event.getX();       // Node-relative coordinate
-    
-        System.out.println("Graph canvas clicked at X: " + nodeX + " Y: " + event.getY());
-    });
-
-    public graphDisplay() {
-
-        //configure container
-        this.setPrefSize(430, 430);
-
-        //initialize UI children
-        this.getChildren().addAll();
-    }
-    */
-
-
